@@ -8,6 +8,6 @@ def filter_datum(fields: List[str], redaction: str, message: str,
                  separator: str) -> str:
     """Obfuscates private fields in message """
     for item in fields:
-        message = re.sub(rf'{item}.[^\{separator}]*',
-                         f'{item}={redaction}', message)
+        pattern, replace = rf'{item}.[^\{separator}]*', f'{item}={redaction}'
+        message = re.sub(pattern, replace, message)
     return message

@@ -19,17 +19,10 @@ class RedactingFormatter(logging.Formatter):
 
     def format(self, record: logging.LogRecord) -> str:
         """filter values in incoming log records using filter_datum() """
-        result = filter_datum(self.fields, self.REDACTION,
-                              record.msg, self.SEPARATOR)
-        formatted_message = self.FORMAT % {
-                                            "name": record.name,
-                                            "levelname": record.levelname,
-                                            "asctime":
-                                            self.formatTime(record,
-                                                            self.datefmt),
-                                            "message": result
-                                        }
-        return formatted_message
+        return filter_datum(
+            self.fields, self.REDACTION, super(
+                RedactingFormatter, self).format(record),
+            self.SEPARATOR)
 
 
 def filter_datum(fields: List[str], redaction: str, message: str,
@@ -37,5 +30,5 @@ def filter_datum(fields: List[str], redaction: str, message: str,
     """Obfuscates private fields in message """
     for item in fields:
         pattern = rf'{item}=(.*?)\{separator}'
-        message = re.sub(pattern,  f' {item}={redaction}{separator}', message)
+        message = re.sub(pattern,  f'{item}={redaction}{separator}', message)
     return message

@@ -19,7 +19,7 @@ class Auth:
             if not route.endswith('/'):
                 route = route + '/'
         return False if path in excluded_paths else True
-    
+
     def authorization_header(self, request=None) -> str:
         """Returns None, will implement http request header"""
         return None

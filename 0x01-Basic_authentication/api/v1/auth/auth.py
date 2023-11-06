@@ -10,13 +10,13 @@ class Auth:
         pass
 
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
-        """returns false"""
+        """returns false, determine if authentication is needed"""
         return False
 
     def authorization_header(self, request=None) -> str:
-        """Returns None"""
+        """Returns None, will implement http request header"""
         return None
 
     def current_user(self, request=None) -> TypeVar('User'):
-        """Returns None"""
+        """Returns None, will authenticate current user"""
         return None

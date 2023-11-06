@@ -30,5 +30,13 @@ def stats() -> str:
 def unauthorized() -> str:
     """GET /api/v1/unauthorized
     Return:
-    - unauthorized for authentication failure"""
+    - {'error': 'unauthorized'}"""
     return abort(401)
+
+
+@app_views.route('/forbidden', methods=['GET'], strict_slashes=False)
+def forbidden():
+    """GET /api/v1/forbidden
+    Return:
+    - {'error': 'Forbidden'"""
+    return abort(403)

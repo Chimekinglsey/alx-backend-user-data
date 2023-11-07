@@ -27,7 +27,7 @@ class Auth:
             else:
                 if path == route:
                     return True
-        return path in excluded_paths
+        return False
 
     def authorization_header(self, request=None) -> str:
         """Request validation"""

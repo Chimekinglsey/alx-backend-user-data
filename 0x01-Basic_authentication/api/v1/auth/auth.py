@@ -21,8 +21,13 @@ class Auth:
         return False if path in excluded_paths else True
 
     def authorization_header(self, request=None) -> str:
-        """Returns None, will implement http request header"""
-        return None
+        """Request validation"""
+        if request is None:
+            return None
+        elif not (request.headers.get('Authorization')):
+            return None
+        else:
+            return request.headers.get('Authorization')
 
     def current_user(self, request=None) -> TypeVar('User'):
         """Returns None, will authenticate current user"""

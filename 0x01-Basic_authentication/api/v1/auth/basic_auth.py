@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-6. Simulated Basic Authentication
+9. Basic - User credentials
 """
 import base64
 import binascii
@@ -35,3 +35,15 @@ class BasicAuth(Auth):
             return base64.b64decode(byte_header).decode('utf-8')
         except Exception as e:
             return None
+
+    def extract_user_credentials(self, decoded_base64_authorization_header:
+                                 str) -> (str, str):
+        """retrieve encoded user email and password"""
+        if not decoded_base64_authorization_header:
+            return None
+        if not isinstance(decoded_base64_authorization_header, str):
+            return None
+        if ':' not in decoded_base64_authorization_header:
+            return None
+        email, password = decoded_base64_authorization_header.split(':')
+        return (email, password)

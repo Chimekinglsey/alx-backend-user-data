@@ -56,7 +56,6 @@ class BasicAuth(Auth):
             return None
         if user_pwd is None or not isinstance(user_pwd, str):
             return None
-        # self.load_from_file()
         users = User.search({'email': user_email})
         if not users:
             return None
@@ -64,3 +63,14 @@ class BasicAuth(Auth):
             if user.is_valid_password(user_pwd):
                 return user
         return None
+
+    def current_user(self, request=None) -> TypeVar('User'):
+        """overload Auth.current_user, retrieves User instance of a request"""
+        token = self.authorization_header(request)
+        user = None
+        if token:
+            b64 = self.extract_base64_authorization_header(token)
+            b4_decoded = self.decode_base64_authorization_header(b64)
+            email, passwd = self.extract_user_credentials(b4_decoded)
+            user = self.user_object_from_credentials(email, passwd)
+        return user

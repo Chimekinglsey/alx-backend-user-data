@@ -13,6 +13,8 @@ class Auth:
         """Define which routes don't need authentication"""
         if path is None or excluded_paths is None or len(excluded_paths) < 1:
             return True
+        if path.endswith('*'):
+            path = path.rstrip('*')
         if not path.endswith('/'):
             path = path + '/'
         for route in excluded_paths:

@@ -14,10 +14,12 @@ class Auth:
         if path is None or excluded_paths is None or len(excluded_paths) < 1:
             return True
         if not path.endswith('/'):
-            path = path + '/'
+            path = f'{path}/'
         for route in excluded_paths:
+            if route.endswith('*'):
+                route = route.rstrip('*')
             if not route.endswith('/'):
-                route = route + '/'
+                route = f'{route}/'
         return False if path in excluded_paths else True
 
     def authorization_header(self, request=None) -> str:

@@ -48,14 +48,15 @@ class BasicAuth(Auth):
             return (None, None)
         email, *password = decoded_base64_authorization_header.split(':')
         if len(password) == 1:
-            return (email, password)
-        passwd = ''
-        for item in password:
-            count = ''
-            count = ':' + item
-            passwd += count
-        passwd = passwd.lstrip(':')
-        return (email, passwd)
+            return (email[0], password)
+        else:
+            passwd = ''
+            for item in password:
+                count = ''
+                count = ':' + item
+                passwd += count
+            password = passwd.lstrip(':')
+        return (email, password)
 
     def user_object_from_credentials(self, user_email: str,
                                      user_pwd: str) -> TypeVar('User'):
@@ -79,6 +80,6 @@ class BasicAuth(Auth):
         if token:
             b64 = self.extract_base64_authorization_header(token)
             b4_decoded = self.decode_base64_authorization_header(b64)
-            email, passwd = self.extract_user_credentials(b4_decoded)
-            user = self.user_object_from_credentials(email, passwd)
+            data = self.extract_user_credentials(b4_decoded)
+            user = self.user_object_from_credentials(data[0], data[1])
         return user

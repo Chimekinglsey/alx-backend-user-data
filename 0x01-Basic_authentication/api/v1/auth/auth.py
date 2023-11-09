@@ -16,14 +16,15 @@ class Auth:
             for exclusion_path in map(lambda x: x.strip(), excluded_paths):
                 pattern = ''
                 if exclusion_path[-1] == '*':
-                    pattern = f'{exclusion_path[0:-1]}.*'
+                    pattern = '{}.*'.format(exclusion_path[0:-1])
                 elif exclusion_path[-1] == '/':
-                    pattern = '{exclusion_path[0:-1]}/*'
+                    pattern = '{}/*'.format(exclusion_path[0:-1])
                 else:
-                    pattern = f'{exclusion_path}/*'
+                    pattern = '{}/*'.format(exclusion_path)
                 if re.match(pattern, path):
                     return False
         return True
+
         # if path is None or excluded_paths is None or len(excluded_paths) < 1:
         #     return True
 

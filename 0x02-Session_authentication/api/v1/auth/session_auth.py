@@ -4,6 +4,7 @@ Module for Session Authentication
 """
 from uuid import uuid4
 from .auth import Auth
+from models.user import User
 
 
 class SessionAuth(Auth):
@@ -24,3 +25,9 @@ class SessionAuth(Auth):
             user_id = self.user_id_by_session_id.get(session_id)
             return user_id
         return None
+
+    def current_user(self, request=None) -> str:
+        """Overload that returns a user instance based on cookie value"""
+        cookie_value = self.session_cookie(request)
+        user_id = self.user_id_for_session_id(cookie_value)
+        return User.get(user_id)

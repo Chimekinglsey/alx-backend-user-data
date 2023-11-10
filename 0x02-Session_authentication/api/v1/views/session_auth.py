@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 @app.route('/api/v1/auth_session/login', methods=['POST'],
            strict_slashes=False)
-def authenticate():
+def authenticate() -> str:
     """Handles all routes for session authentication"""
     email = request.form.get('email')
     password = request.form.get('password')
@@ -29,9 +29,8 @@ def authenticate():
     if not user:
         return jsonify({"error": "wrong password"}), 401
     from api.v1.app import auth
-    s_id = auth.create_session(user)
+    auth.create_session(user)
     cookie_value = auth.session_cookie(request)
     response = jsonify(User.to_json(user))
     response.set_cookie('session_id', str(cookie_value))
     return response
-

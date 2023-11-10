@@ -2,15 +2,15 @@
 """
 Module for Session Authentication
 """
+import os
 from models.user import User
-from flask import request, Flask, jsonify
+from api.v1.views import app_views
+from typing import Tuple
+from flask import request, jsonify, abort
 
 
-app = Flask(__name__)
-
-
-@app.route('/api/v1/auth_session/login', methods=['POST'],
-           strict_slashes=False)
+@app_views.route('/api/v1/auth_session/login', methods=['POST'],
+                 strict_slashes=False)
 def authenticate() -> str:
     """Handles all routes for session authentication"""
     email = request.form.get('email')
@@ -31,6 +31,20 @@ def authenticate() -> str:
     from api.v1.app import auth
     auth.create_session(user)
     cookie_value = auth.session_cookie(request)
-    response = jsonify(User.to_json(user))
-    response.set_cookie('session_id', str(cookie_value))
+    response = jsonify(user.to_json())
+    response.set_cookie(os.getenv("SESSION_NAME"), str(cookie_value))
     return response
+
+
+@app_views.route(
+    '/auth_session/logout', methods=['DELETE'], strict_slashes=False)
+def logout() -> Tuple[str, int]:
+    """DELETE /api/v1/auth_session/logout
+    Return:
+      - An empty JSON object.
+    """
+    from api.v1.app import auth
+    is_destroyed = auth.destroy_session(request)
+    if not is_destroyed:
+        abort(404)
+    return jsonify({})

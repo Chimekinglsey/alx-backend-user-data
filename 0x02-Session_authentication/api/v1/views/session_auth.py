@@ -9,9 +9,9 @@ from typing import Tuple
 from flask import request, jsonify, abort
 
 
-@app_views.route('/api/v1/auth_session/login', methods=['POST'],
+@app_views.route('/auth_session/login', methods=['POST'],
                  strict_slashes=False)
-def authenticate() -> str:
+def login() -> str:
     """Handles all routes for session authentication"""
     email = request.form.get('email')
     password = request.form.get('password')
@@ -29,10 +29,9 @@ def authenticate() -> str:
     if not user:
         return jsonify({"error": "wrong password"}), 401
     from api.v1.app import auth
-    auth.create_session(user)
-    cookie_value = auth.session_cookie(request)
+    session_id = auth.create_session(user)
     response = jsonify(user.to_json())
-    response.set_cookie(os.getenv("SESSION_NAME"), str(cookie_value))
+    response.set_cookie(os.getenv("SESSION_NAME"), str(session_id))
     return response
 
 

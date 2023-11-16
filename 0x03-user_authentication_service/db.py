@@ -40,20 +40,23 @@ class DB:
         self._session.commit()
         return new_user
 
-    def find_user_by(self, **kwargs) -> str:
-        """Returns first matching row in `users` for input param """
+    def find_user_by(self, **kwargs) -> User:
+        """Finds a user based on a set of filters.
+        """
+        fields, values = [], []
         for key, value in kwargs.items():
             if hasattr(User, key):
-                pass
+                fields.append(getattr(User, key))
+                values.append(value)
             else:
                 raise InvalidRequestError()
-        try:
-            result = self._session.query(User).filter_by(**kwargs).one()
-            if not result:
-                raise NoResultFound()
-            return result
-        except NoResultFound:
+        result = self._session.query(User).filter(
+            tuple_(*fields).in_([tuple(values)])
+        ).first()
+        if result is None:
             raise NoResultFound()
+        return result
+
 
     def update_user(self, user_id: int, **kwargs) -> None:
         """Updates a user with `user_id`"""

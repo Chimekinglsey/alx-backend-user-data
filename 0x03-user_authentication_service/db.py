@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """DB module
 """
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, tuple_
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
@@ -42,17 +42,39 @@ class DB:
 
     def find_user_by(self, **kwargs: Dict[str, Any]) -> str:
         """Returns first matching row in `users` for input param """
+        keys, values = [], []
         for key, value in kwargs.items():
             if hasattr(User, key):
-                pass
+                keys.append(getattr(User, key))
+                values.append(value)
             else:
                 raise InvalidRequestError()
-        try:
-            result = self._session.query(User).filter_by(**kwargs).first()
-            if not result:
-                raise NoResultFound()
-            return result
-        except NoResultFound:
+        result = self._session.query(User).filter(
+            tuple_(*keys).in_([tuple(values)])
+        ).first()
+        if result is None:
             raise NoResultFound()
+        return result
+        # for key, value in kwargs.items():
+        #     if hasattr(User, key):
+        #         pass
+        #     else:
+        #         raise InvalidRequestError()
+        # try:
+        #     result = self._session.query(User).filter_by(**kwargs).first()
+        #     if not result:
+        #         raise NoResultFound()
+        #     return result
+        # except NoResultFound:
+        #     raise NoResultFound()
 
-    # def update_user(self, )
+    def update_user(self, user_id: int, **kwargs: Dict[str, Any]) -> None:
+        """Updates a user with `user_id`"""
+        user = self.find_user_by(id=user_id)
+        for key, value in kwargs.items():
+            if not (hasattr(User, key)):
+                raise ValueError()
+            setattr(user, key, value)
+        self._session.add(user)
+        self._session.commit()
+        

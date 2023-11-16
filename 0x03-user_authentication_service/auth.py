@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-""" User Authentication Module
+"""
+User Authentication Module
 """
 from sqlalchemy.orm.exc import NoResultFound
 import bcrypt
@@ -75,7 +76,6 @@ class Auth:
         """Send reset password token to email"""
         user = self._db.find_user_by(email=email)
         if user:
-            self._db.update_user(user.id, reset_token=_generate_uuid())
-            # user.reset_token = _generate_uuid()
+            user.reset_token = _generate_uuid()
             return user.reset_token
         return ValueError

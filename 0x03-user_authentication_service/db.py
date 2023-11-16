@@ -40,10 +40,13 @@ class DB:
         self._session.commit()
         return new_user
 
-    def find_user_by(self, **kwargs) -> str:
+    def find_user_by(self, **kwargs) -> User:
         """Returns first matching row in `users` for input param """
-        if hasattr(User, str(kwargs.keys)):
-            raise InvalidRequestError()
+        for key, value in kwargs.items():
+            if hasattr(User, key):
+                pass
+            else:
+                raise InvalidRequestError()
         try:
             result = self._session.query(User).filter_by(**kwargs).one()
             if not result:

@@ -40,7 +40,7 @@ class DB:
         self._session.commit()
         return new_user
 
-    def find_user_by(self, **kwargs: Dict[str, Any]) -> str:
+    def find_user_by(self, **kwargs) -> str:
         """Returns first matching row in `users` for input param """
         for key, value in kwargs.items():
             if hasattr(User, key):
@@ -55,7 +55,7 @@ class DB:
         except NoResultFound:
             raise NoResultFound()
 
-    def update_user(self, user_id: int, **kwargs: Dict[str, Any]) -> None:
+    def update_user(self, user_id: int, **kwargs) -> None:
         """Updates a user with `user_id`"""
         user = self.find_user_by(id=user_id)
         for key, value in kwargs.items():

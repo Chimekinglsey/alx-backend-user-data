@@ -42,31 +42,18 @@ class DB:
 
     def find_user_by(self, **kwargs: Dict[str, Any]) -> str:
         """Returns first matching row in `users` for input param """
-        keys, values = [], []
         for key, value in kwargs.items():
             if hasattr(User, key):
-                keys.append(getattr(User, key))
-                values.append(value)
+                pass
             else:
                 raise InvalidRequestError()
-        result = self._session.query(User).filter(
-            tuple_(*keys).in_([tuple(values)])
-        ).first()
-        if result is None:
+        try:
+            result = self._session.query(User).filter_by(**kwargs).first()
+            if not result:
+                raise NoResultFound()
+            return result
+        except NoResultFound:
             raise NoResultFound()
-        return result
-        # for key, value in kwargs.items():
-        #     if hasattr(User, key):
-        #         pass
-        #     else:
-        #         raise InvalidRequestError()
-        # try:
-        #     result = self._session.query(User).filter_by(**kwargs).first()
-        #     if not result:
-        #         raise NoResultFound()
-        #     return result
-        # except NoResultFound:
-        #     raise NoResultFound()
 
     def update_user(self, user_id: int, **kwargs: Dict[str, Any]) -> None:
         """Updates a user with `user_id`"""
@@ -77,4 +64,3 @@ class DB:
             setattr(user, key, value)
         self._session.add(user)
         self._session.commit()
-        

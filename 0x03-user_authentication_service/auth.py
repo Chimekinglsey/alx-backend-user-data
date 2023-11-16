@@ -70,3 +70,11 @@ class Auth:
             user.session_id = None
             self._db._session.add(user)
             self._db._session.commit()
+
+    def get_reset_password_token(self, email: str) -> str:
+        """Send reset password token to email"""
+        user = self._db.find_user_by(email=email)
+        if user:
+            user.reset_token = _generate_uuid()
+            return user.reset_token
+        return ValueError

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """DB module
 """
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, tuple_
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
@@ -40,11 +40,19 @@ class DB:
         self._session.commit()
         return new_user
 
-    def find_user_by(self, **kwargs: Dict[str, Any]) -> str:
+    def find_user_by(self, **kwargs):
         """Returns first matching row in `users` for input param """
+        filters = {}
+        for key, value in kwargs.items():
+            if hasattr(User, key):
+                filters[key] = value
+            else:
+                raise InvalidRequestError()
+
         try:
-            return self._session.query(User).filter_by(**kwargs).first()
-        except NoResultFound as e:
-            return e
-        except InvalidRequestError as e:
-            return e
+            result = self._session.query(User).filter_by(**filters).first()
+            if not result:
+                raise NoResultFound()
+            return result
+        except NoResultFound:
+            raise NoResultFound()

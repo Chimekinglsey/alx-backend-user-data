@@ -87,7 +87,7 @@ def update_password() -> str:
         AUTH.update_password(reset_token, new_password)
         passwd_reset_status = True
     except ValueError:
-       passwd_reset_status = False
+        abort(403)
     if passwd_reset_status is not True:
         abort(403)
     return jsonify({"email": email, "message": "Password updated"})

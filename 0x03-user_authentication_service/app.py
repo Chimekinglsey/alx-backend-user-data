@@ -67,6 +67,7 @@ def profile():
 def get_reset_password_token():
     """Send reset password token to email"""
     email = request.form.get('email')
+    user = None
     try:
         user = AUTH._db.find_user_by(email=email)
     except NoResultFound:
@@ -74,7 +75,8 @@ def get_reset_password_token():
     if user:
         token = AUTH.get_reset_password_token(email)
         return jsonify({"email": user.email, "reset_token": token}), 200
-    abort(403)
+    if user is None:
+        abort(403)
 
 
 if __name__ == "__main__":

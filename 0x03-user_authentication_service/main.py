@@ -2,7 +2,10 @@
 """End-to-end integration test """
 import requests
 
+
 base_url = 'http://127.0.0.1:5000/'
+
+
 def register_user(email: str, password: str) -> None:
     data = {"email": email, "password": password}
     """ test register user method"""
@@ -10,7 +13,7 @@ def register_user(email: str, password: str) -> None:
     assert response.status_code == 200
 
     assert response.request.url == base_url+'users'
-    assert  "email" in response.text
+    assert "email" in response.text
 
 
 def log_in_wrong_password(email: str, password: str) -> None:
@@ -32,11 +35,13 @@ def log_in(email: str, password: str) -> str:
     assert response.request.method == 'GET'
     assert response.request.url == base_url+'profile'
 
+
 def profile_unlogged() -> None:
     response = requests.get(f'{base_url}')
     assert response.status_code == 200
     assert response.request.method == 'GET'
     assert "Bienvenue" in response.text
+
 
 def profile_logged(session_id: str) -> None:
     response = requests.post(f'{base_url}sessions')
@@ -54,6 +59,7 @@ def reset_password_token(email: str) -> str:
     response = requests.post(f'{base_url}reset_password')
     assert response.status_code == 403
     assert response.request.method == 'POST'
+
 
 def update_password(email: str, reset_token: str, new_password: str) -> None:
     data = {"email": email, "password": new_password,

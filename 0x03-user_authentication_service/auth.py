@@ -84,3 +84,5 @@ class Auth:
             raise ValueError
         self._db.update_user(user.id, reset_token=_generate_uuid())
         return user.reset_token
+
+    def 

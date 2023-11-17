@@ -88,7 +88,7 @@ def update_password() -> str:
         passwd_reset_status = True
     except ValueError:
         abort(403)
-    if passwd_reset_status is not True:
+    if not passwd_reset_status:
         abort(403)
     return jsonify({"email": email, "message": "Password updated"})
 

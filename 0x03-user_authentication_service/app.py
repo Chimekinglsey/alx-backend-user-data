@@ -86,7 +86,7 @@ def update_password() -> str:
     try:
         AUTH.update_password(reset_token, new_password)
         passwd_reset_status = True
-    except ValueError or NoResultFound:
+    except ValueError:
        passwd_reset_status = False
     if passwd_reset_status is not True:
         abort(403)
